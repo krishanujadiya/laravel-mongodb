@@ -45,16 +45,20 @@ class ContactController extends Controller
         return view('disclaimer');
     }
 
-    public function contactSubmit()
+    public function contactSubmit(Request $request)
     {
-        $contact = new Contact();
+        $request->validate([
+            'name'      => 'required',
+            'contact'   => 'required|digits:10',
+            'email'     => 'required|email',
+            'message'   => 'required',
 
-        $contact->name = request('name');
-        $contact->email = request('email');
-        $contact->contact = request('contact');
-        $contact->message = request('message');
-        $contact->save();
+        ]);
 
-        return redirect()->route('home');
+        $contact = $request->all();
+
+        Contact::create($contact);
+
+        return back()->with('success', 'Thank you for Contacting Us and Your Valuable Time.');
     }
 }
